@@ -8,7 +8,8 @@
       "handlers": [
         {
           "methods": [
-            "POST"
+            "POST",
+            "GET"
           ],
           "pathPattern": "/api/v1/mergeJob",
           "permissionsRequired": [],
