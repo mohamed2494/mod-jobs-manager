@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "properties": {
+    "source": {
+      "type": "string",
+      "description": "The source of the merge event"
+    },
+    "destination": {
+      "type": "string",
+      "description": "The destination of the merge event"
+    },
+    "mergeId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The unique identifier for the job"
+    },
+    "type": {
+      "type": "string",
+      "description": "The type of the merge event"
+    },
+    "status": {
+      "type": "string",
+      "description": "The status of the merge event"
+    }
+  },
+  "required": ["source", "destination", "mergeId", "type"]
+}

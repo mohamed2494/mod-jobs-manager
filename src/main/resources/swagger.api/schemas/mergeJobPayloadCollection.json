@@ -1,0 +1,15 @@
+{
+  "description": "Merge Job Collection",
+  "type": "object",
+  "properties": {
+    "entities": {
+      "description": "List of merge job entities",
+      "type": "array",
+      "id": "mergeJobEntities",
+      "items": {
+        "type": "object",
+        "$ref": "mergeJobPayload.json"
+      }
+    }
+  }
+}

@@ -1,0 +1,214 @@
+openapi: 3.0.0
+info:
+  title: MergeJob API
+  description: MergeJob API description
+  version: 1.0.0
+
+paths:
+  /api/v1/mergeJob:
+    get:
+      responses:
+        '200':
+          description: Merge event processed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mergeJobPayloadCollection'
+        '500':
+          description: Internal server error
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Internal server error
+      description: Get a list of existing merge jobs for a tenant
+      operationId: getMergeJobs
+      parameters:
+        - $ref: '#/components/parameters/trait_pageable_offset'
+        - $ref: '#/components/parameters/trait_pageable_limit'
+    post:
+
+      responses:
+        '200':
+          description: Merge event processed successfully
+        '422':
+          $ref: '#/components/responses/trait_validate_422'
+        '500':
+          description: Internal server error
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Internal server error
+
+      description: Process a merge event
+      operationId: mergeData
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/mergeJobPayload"
+
+
+  /api/v1/mergeJobs/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the merge job
+        schema:
+          type: string
+    get:
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/mergeJobPayload"
+      operationId: getMergeJob
+      description: Get a merge job by ID
+      parameters:
+        - $ref: '#/components/parameters/trait_path_id_required'
+
+    delete:
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example: "Merge job with ID {id} deleted successfully"
+        '422':
+          $ref: '#/components/responses/trait_validate_422'
+        '500':
+          description: Internal server error
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Internal server error
+      operationId: deleteMergeJob
+      description: Delete a merge job by ID
+      parameters:
+        - $ref: '#/components/parameters/trait_path_id_required'
+    put:
+      responses:
+        204:
+          description: No Content
+        500:
+          description: Error encountered while processing request
+      operationId: updateMergeJob
+      description: update job
+      parameters:
+        - $ref: '#/components/parameters/trait_path_id_required'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/mergeJobPayload'
+
+  /api/v1/mergeJob/typeA:
+    post:
+      responses:
+        '200':
+          description: Merge event A processed successfully
+        '422':
+          $ref: '#/components/responses/trait_validate_422'
+        '500':
+          description: Internal server error
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Internal server error
+
+      operationId: mergeTypeA
+      description: Process a TypeA merge event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/mergeJobPayload"
+
+
+  /api/v1/mergeJob/typeB:
+    post:
+      responses:
+        '200':
+          description: Merge event B processed successfully
+        '422':
+          $ref: '#/components/responses/trait_validate_422'
+        '500':
+          description: Internal server error
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Internal server error
+
+      operationId: mergeTypeB
+      description: Process a TypeB merge event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/mergeJobPayload"
+
+components:
+  responses:
+    trait_validate_422:
+      description: Validation errors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errors'
+
+  schemas:
+    mergeJobPayload:
+      $ref: schemas/mergeJobPayload.json
+    mergeJobPayloadCollection:
+      $ref: schemas/mergeJobPayloadCollection.json
+    error:
+      $ref: schemas/error.json
+    errors:
+      $ref: schemas/errors.json
+
+
+  parameters:
+    trait_pageable_offset:
+      name: offset
+      in: query
+      description: Skip over a number of elements by specifying an offset value for the query
+      schema:
+        default: 0
+        minimum: 0
+        maximum: 2147483647
+        type: integer
+    trait_pageable_limit:
+      name: limit
+      in: query
+      description: Limit the number of elements returned in the response
+      schema:
+        default: 10
+        minimum: 0
+        maximum: 2147483647
+        type: integer
+    trait_pageable_sort:
+      name: sort
+      in: query
+      description: Array of sort orders
+      schema:
+        type: string
+        default: '-createdDate'
+    trait_path_id_required:
+      name: id
+      in: path
+      required: true
+      description: entity id.
+      schema:
+        type: string
+
