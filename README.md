@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The mod-jobs-manager module is one of two modules, alongside the mod-jobs-consumer, designed to manage and process job-related tasks within the FOLIO system. It's all about creating, monitoring, and processing jobs, with detailed tracking of their status. This module is built on the FOLIO Spring-based backend, ensuring it smoothly fits into the FOLIO system.
+The mod-jobs-manager module is one of two modules, alongside the mod-jobs-consumer [https://github.com/mohamed2494/mod-jobs-consumer.git], designed to manage and process job-related tasks within the FOLIO system. It's all about creating, monitoring, and processing jobs, with detailed tracking of their status. This module is built on the FOLIO Spring-based backend, ensuring it smoothly fits into the FOLIO system.
 
 ## Getting Started
 
