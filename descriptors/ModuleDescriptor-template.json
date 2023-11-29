@@ -18,7 +18,8 @@
         {
           "methods": [
             "GET",
-            "DELETE"
+            "DELETE",
+            "PUT"
           ],
           "pathPattern": "/api/v1/mergeJob/{id}",
           "permissionsRequired": []
