@@ -3,6 +3,7 @@ package org.folio.service.merge;
 import org.folio.domain.dto.MergeJobPayload;
 import org.folio.model.Job;
 import org.folio.service.job.JobService;
+import org.folio.spring.FolioExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ public abstract class AbstractMergeProducerService {
   private final String mergeTopic = MergeConstants.MERGE_TOPIC;
 
   @Autowired
+  private FolioExecutionContext folioExecutionContext;
+
+  @Autowired
   public AbstractMergeProducerService(KafkaTemplate<String, Object> kafkaTemplate, JobService jobService) {
     this.kafkaTemplate = kafkaTemplate;
     this.jobService = jobService;
@@ -29,7 +33,8 @@ public abstract class AbstractMergeProducerService {
     MergeJobPayload mergeEvent = getMergeData(uuid, sourceData, destinationData);
 
 
-    mergeEvent.setStatus(String.valueOf(Job.Status.PENDING));
+    mergeEvent.setStatus(String.valueOf(Job.Status.NEW));
+    mergeEvent.setTenantId(folioExecutionContext.getTenantId());
     // Save the job before producing the merge event
     Job job = new Job(getTYPE(), mergeEvent);
     jobService.createJob(job);

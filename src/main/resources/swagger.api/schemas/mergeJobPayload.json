@@ -21,6 +21,10 @@
     "status": {
       "type": "string",
       "description": "The status of the merge event"
+    },
+    "tenantId": {
+      "type": "string",
+      "description": "The status of the merge event"
     }
   },
   "required": ["source", "destination", "mergeId", "type"]

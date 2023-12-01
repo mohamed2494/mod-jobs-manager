@@ -97,5 +97,5 @@ public class Job {
       '}';
   }
 
-  public enum Status {PENDING, COMPLETED, FAILED}
+  public enum Status {NEW, PENDING, COMPLETED, FAILED}
 }

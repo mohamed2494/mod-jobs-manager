@@ -14,7 +14,6 @@ public class MergeJobMapper {
 
     mergeJobPayload.setStatus(job.getStatus());
 
-    System.out.println("statussss" + job.getStatus());
     return mergeJobPayload;
   }
 

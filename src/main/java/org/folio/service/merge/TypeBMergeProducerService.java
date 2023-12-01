@@ -25,9 +25,7 @@ public class TypeBMergeProducerService extends AbstractMergeProducerService {
   @Override
   protected MergeJobPayload getMergeData(UUID uuid, String sourceData, String destinationData) {
 
-    System.out.println("TypeBMergeProducerService" + this.TYPE);
 
-    System.out.println("TypeBMergeProducerService type" + getTYPE());
     // Business logic depend on the type
     return new MergeJobPayload().mergeId(uuid).source(sourceData).destination(destinationData).type(TYPE);
   }
