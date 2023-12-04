@@ -12,7 +12,7 @@ public interface JobService {
 
   MergeJobPayload getJobById(UUID jobId);
 
-  List<MergeJobPayload> getJobs(Integer offset, Integer limit, String cql);
+  org.folio.domain.dto.MergeJobPayloadCollection getJobs(Integer offset, Integer limit, String cql);
 
   Job createJob(Job job);
 

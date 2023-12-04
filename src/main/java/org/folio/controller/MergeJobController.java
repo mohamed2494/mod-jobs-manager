@@ -70,12 +70,12 @@ public class MergeJobController implements org.folio.rest.api.DefaultApi {
   public ResponseEntity<MergeJobPayloadCollection> getMergeJobs(Integer offset,
                                                                 Integer limit,
                                                                 @Valid String query) {
-    List<MergeJobPayload> mergeJobPayloads = jobService.getJobs(offset, limit, query);
 
+    MergeJobPayloadCollection mergeJobPayloads = jobService.getJobs(offset, limit, query);
 
     return mergeJobPayloads == null
       ? ResponseEntity.notFound().build()
-      : ResponseEntity.ok((MergeJobPayloadCollection) mergeJobPayloads);
+      : ResponseEntity.ok(mergeJobPayloads);
   }
 
 }

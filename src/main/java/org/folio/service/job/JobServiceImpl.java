@@ -1,6 +1,7 @@
 package org.folio.service.job;
 
 import org.folio.domain.dto.MergeJobPayload;
+import org.folio.domain.dto.MergeJobPayloadCollection;
 import org.folio.factory.MergeProducerFactory;
 import org.folio.mapper.MergeJobMapper;
 import org.folio.model.Job;
@@ -45,7 +46,7 @@ public class JobServiceImpl implements JobService {
 
 
   @Override
-  public List<MergeJobPayload> getJobs(Integer offset, Integer limit, String cql) {
+  public MergeJobPayloadCollection getJobs(Integer offset, Integer limit, String cql) {
 
     Pageable pageable = PageRequest.of(offset / limit, limit);
 
@@ -55,9 +56,10 @@ public class JobServiceImpl implements JobService {
       ? jobRepository.findAll(pageable)
       : jobRepository.findByCQL(cql, new OffsetRequest(offset, limit));
 
-    return mergeJobPayloads.getContent().stream()
-      .map(MergeJobMapper::mapEntityToDto)
-      .collect(Collectors.toList());
+
+    return new org.folio.domain.dto.MergeJobPayloadCollection()
+      .entities(mergeJobPayloads.stream().map(MergeJobMapper::mapEntityToDto).collect(Collectors.toList()));
+
   }
 
   public Job createJob(Job job) {
