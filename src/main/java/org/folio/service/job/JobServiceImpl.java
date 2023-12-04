@@ -1,9 +1,11 @@
 package org.folio.service.job;
 
 import org.folio.domain.dto.MergeJobPayload;
+import org.folio.factory.MergeProducerFactory;
 import org.folio.mapper.MergeJobMapper;
 import org.folio.model.Job;
 import org.folio.repository.JobRepository;
+import org.folio.service.merge.AbstractMergeProducerService;
 import org.folio.spring.data.OffsetRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,10 +24,13 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class JobServiceImpl implements JobService {
 
   private final JobRepository jobRepository;
+  private final MergeProducerFactory mergeProducerFactory;
+
 
   @Autowired
-  public JobServiceImpl(JobRepository jobRepository) {
+  public JobServiceImpl(JobRepository jobRepository, MergeProducerFactory mergeProducerFactory) {
     this.jobRepository = jobRepository;
+    this.mergeProducerFactory = mergeProducerFactory;
   }
 
   public List<Job> getAllJobs() {
@@ -37,6 +42,7 @@ public class JobServiceImpl implements JobService {
 
     return optionalJob.map(MergeJobMapper::mapEntityToDto).orElse(null);
   }
+
 
   @Override
   public List<MergeJobPayload> getJobs(Integer offset, Integer limit, String cql) {
@@ -66,6 +72,19 @@ public class JobServiceImpl implements JobService {
       .map(existingJob -> updateJobFields(existingJob, updatedJob))
       .map(jobRepository::save)
       .orElse(null);
+
+  }
+
+  public void mergeData(MergeJobPayload mergeJobPayload) {
+
+    String type = mergeJobPayload.getType();
+    String sourceData = mergeJobPayload.getSource();
+    String destinationData = mergeJobPayload.getDestination();
+
+    // Use the factory to get the appropriate merge producer
+    AbstractMergeProducerService mergeProducerService = this.mergeProducerFactory.createMergeProducer(type);
+
+    mergeProducerService.produceMergeEvent(sourceData, destinationData);
 
   }
 

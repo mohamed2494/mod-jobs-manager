@@ -11,7 +11,7 @@
             "POST",
             "GET"
           ],
-          "pathPattern": "/api/v1/mergeJob",
+          "pathPattern": "/mergeJob",
           "permissionsRequired": [],
           "modulePermissions": []
         },
@@ -21,23 +21,7 @@
             "DELETE",
             "PUT"
           ],
-          "pathPattern": "/api/v1/mergeJob/{id}",
-          "permissionsRequired": []
-        },
-        {
-          "methods": [
-            "GET",
-            "POST"
-          ],
-          "pathPattern": "/api/v1/mergeJob/typeA",
-          "permissionsRequired": []
-        },
-        {
-          "methods": [
-            "GET",
-            "POST"
-          ],
-          "pathPattern": "/api/v1/mergeJob/typeB",
+          "pathPattern": "/mergeJob/{id}",
           "permissionsRequired": []
         }
       ]

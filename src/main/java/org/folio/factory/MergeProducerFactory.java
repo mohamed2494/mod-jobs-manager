@@ -14,6 +14,7 @@ public class MergeProducerFactory {
 
   private final TypeCMergeProducerService typeCMergeService;
 
+
   @Autowired
   public MergeProducerFactory(TypeAMergeProducerService typeAMergeService, TypeBMergeProducerService typeBMergeService, TypeCMergeProducerService typeCMergeProducerService) {
     this.typeAMergeService = typeAMergeService;

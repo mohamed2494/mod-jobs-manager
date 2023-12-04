@@ -3,12 +3,9 @@ package org.folio.controller;
 
 import org.folio.domain.dto.MergeJobPayload;
 
+import org.folio.domain.dto.MergeJobPayloadCollection;
 import org.folio.factory.MergeProducerFactory;
-import org.folio.model.Job;
-import org.folio.service.merge.AbstractMergeProducerService;
 import org.folio.service.job.JobService;
-import org.folio.service.merge.TypeAMergeProducerService;
-import org.folio.service.merge.TypeBMergeProducerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,28 +15,23 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1")
-public class MergeJobController {
+@RequestMapping("/")
+public class MergeJobController implements org.folio.rest.api.DefaultApi {
 
-
-  private final TypeAMergeProducerService typeAMergeService;
-  private final TypeBMergeProducerService typeBMergeService;
 
   private final MergeProducerFactory mergeProducerFactory;
   private final JobService jobService;
 
 
   @Autowired
-  public MergeJobController(TypeAMergeProducerService typeAMergeService, TypeBMergeProducerService typeBMergeService, MergeProducerFactory mergeProducerFactory, JobService jobService) {
-    this.typeAMergeService = typeAMergeService;
-    this.typeBMergeService = typeBMergeService;
+  public MergeJobController(MergeProducerFactory mergeProducerFactory, JobService jobService) {
     this.mergeProducerFactory = mergeProducerFactory;
     this.jobService = jobService;
 
   }
 
 
-  @GetMapping("/mergeJob/{id}")
+  @Override
   public ResponseEntity<MergeJobPayload> getMergeJob(@PathVariable String id) {
     MergeJobPayload job = jobService.getJobById(UUID.fromString(id));
     return job == null
@@ -47,68 +39,43 @@ public class MergeJobController {
       : ResponseEntity.ok(job);
   }
 
-  @DeleteMapping("/mergeJob/{id}")
-  public ResponseEntity<String> deleteMergeJob(@PathVariable String id) {
+  @Override
+  public ResponseEntity<Void> deleteMergeJob(@PathVariable String id) {
 
     jobService.deleteJob(UUID.fromString(id));
 
-    return ResponseEntity.ok("Merge job with ID " + id + " deleted successfully");
+    return ResponseEntity.noContent().build();
+
   }
 
-  @PutMapping("/mergeJob/{id}")
-  public ResponseEntity<String> updateMergeJob(@PathVariable String id, MergeJobPayload mergeJobPayload) {
+  @Override
+  public ResponseEntity<Void> updateMergeJob(@PathVariable String id, MergeJobPayload mergeJobPayload) {
 
-    jobService.updateJob(UUID.fromString(id),mergeJobPayload);
+    jobService.updateJob(UUID.fromString(id), mergeJobPayload);
 
-    return ResponseEntity.ok("Merge job with ID " + id + " updated successfully");
+    return ResponseEntity.noContent().build();
+
   }
 
-  @PostMapping("/mergeJob")
-  public String mergeData(@RequestBody MergeJobPayload mergeRequest) {
-    String type = mergeRequest.getType();
-    String sourceData = mergeRequest.getSource();
-    String destinationData = mergeRequest.getDestination();
+  @Override
+  public ResponseEntity<Void> mergeData(@RequestBody MergeJobPayload mergeRequest) {
 
+    this.jobService.mergeData(mergeRequest);
 
-    // Use the factory to get the appropriate merge producer
-    AbstractMergeProducerService mergeProducerService = this.mergeProducerFactory.createMergeProducer(type);
-
-    mergeProducerService.produceMergeEvent(sourceData, destinationData);
-
-    return "Merge event processed successfully";
+    return ResponseEntity.noContent().build();
   }
 
 
-  @GetMapping("/mergeJob")
-  public ResponseEntity<List<MergeJobPayload>> getMergeJobs(Integer offset,
-                                                      Integer limit,
-                                                      @Valid String query) {
-    List<MergeJobPayload> mergeJobPayloads = jobService.getJobs(offset, limit,query);
+  @Override
+  public ResponseEntity<MergeJobPayloadCollection> getMergeJobs(Integer offset,
+                                                                Integer limit,
+                                                                @Valid String query) {
+    List<MergeJobPayload> mergeJobPayloads = jobService.getJobs(offset, limit, query);
 
 
     return mergeJobPayloads == null
       ? ResponseEntity.notFound().build()
-      : ResponseEntity.ok(mergeJobPayloads);
-  }
-  @PostMapping("/mergeJob/typeA")
-  public String typeA(@RequestBody MergeJobPayload mergeRequest) {
-
-    String sourceData = mergeRequest.getSource();
-    String destinationData = mergeRequest.getDestination();
-
-    this.typeAMergeService.produceMergeEvent(sourceData, destinationData);
-
-    return "Merge event A processed successfully";
+      : ResponseEntity.ok((MergeJobPayloadCollection) mergeJobPayloads);
   }
 
-  @PostMapping("/mergeJob/typeB")
-  public String typeB(@RequestBody MergeJobPayload mergeRequest) {
-
-    String sourceData = mergeRequest.getSource();
-    String destinationData = mergeRequest.getDestination();
-
-    this.typeBMergeService.produceMergeEvent(sourceData, destinationData);
-
-    return "Merge event B processed successfully";
-  }
 }

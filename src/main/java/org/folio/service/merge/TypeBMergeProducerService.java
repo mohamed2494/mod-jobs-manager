@@ -1,6 +1,7 @@
 package org.folio.service.merge;
 
 import org.folio.domain.dto.MergeJobPayload;
+import org.folio.repository.JobRepository;
 import org.folio.service.job.JobService;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -13,8 +14,8 @@ public class TypeBMergeProducerService extends AbstractMergeProducerService {
   private final String TYPE = String.valueOf(MergeConstants.MergeType.TYPE_B);
   private final String mergeTopic = MergeConstants.MERGE_TOPIC;
 
-  public TypeBMergeProducerService(KafkaTemplate<String, Object> kafkaTemplate, JobService jobService) {
-    super(kafkaTemplate, jobService);
+  public TypeBMergeProducerService(KafkaTemplate<String, Object> kafkaTemplate, JobRepository jobRepository) {
+    super(kafkaTemplate, jobRepository);
   }
 
   @Override

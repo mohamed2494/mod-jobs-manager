@@ -2,6 +2,7 @@ package org.folio.service.merge;
 
 import org.folio.domain.dto.MergeJobPayload;
 import org.folio.model.Job;
+import org.folio.repository.JobRepository;
 import org.folio.service.job.JobService;
 import org.folio.spring.FolioExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +15,16 @@ import java.util.UUID;
 public abstract class AbstractMergeProducerService {
 
   private final KafkaTemplate<String, Object> kafkaTemplate;
-  private final JobService jobService;
+  private final JobRepository jobRepository;
   private final String mergeTopic = MergeConstants.MERGE_TOPIC;
 
   @Autowired
   private FolioExecutionContext folioExecutionContext;
 
   @Autowired
-  public AbstractMergeProducerService(KafkaTemplate<String, Object> kafkaTemplate, JobService jobService) {
+  public AbstractMergeProducerService(KafkaTemplate<String, Object> kafkaTemplate, JobRepository jobRepository) {
     this.kafkaTemplate = kafkaTemplate;
-    this.jobService = jobService;
+    this.jobRepository = jobRepository;
   }
 
   public void produceMergeEvent(String sourceData, String destinationData) {
@@ -37,7 +38,7 @@ public abstract class AbstractMergeProducerService {
     mergeEvent.setTenantId(folioExecutionContext.getTenantId());
     // Save the job before producing the merge event
     Job job = new Job(getTYPE(), mergeEvent);
-    jobService.createJob(job);
+    jobRepository.save(job);
 
     // publish kafka event
     kafkaTemplate.send(getTopic(), mergeEvent);
