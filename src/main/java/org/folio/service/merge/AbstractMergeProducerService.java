@@ -5,6 +5,7 @@ import org.folio.model.Job;
 import org.folio.repository.JobRepository;
 import org.folio.service.job.JobService;
 import org.folio.spring.FolioExecutionContext;
+import org.folio.util.KafkaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,10 @@ public abstract class AbstractMergeProducerService {
   }
 
   protected String getTopic() {
-    return this.mergeTopic;
+
+
+    return KafkaUtils.getTenantTopicName(this.mergeTopic, folioExecutionContext.getTenantId());
+
   }
 
   protected abstract String getTYPE();
