@@ -39,7 +39,7 @@ public class Job {
   private Timestamp updatedAt;
   public Job() {
     this.payload = null;
-    this.type = "TypeA";
+    this.type = "Type_A";
     this.id = UUID.randomUUID();
   }
 

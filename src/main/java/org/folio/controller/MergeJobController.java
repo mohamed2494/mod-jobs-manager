@@ -4,14 +4,12 @@ package org.folio.controller;
 import org.folio.domain.dto.MergeJobPayload;
 
 import org.folio.domain.dto.MergeJobPayloadCollection;
-import org.folio.factory.MergeProducerFactory;
 import org.folio.service.job.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -19,13 +17,11 @@ import java.util.UUID;
 public class MergeJobController implements org.folio.rest.api.DefaultApi {
 
 
-  private final MergeProducerFactory mergeProducerFactory;
   private final JobService jobService;
 
 
   @Autowired
-  public MergeJobController(MergeProducerFactory mergeProducerFactory, JobService jobService) {
-    this.mergeProducerFactory = mergeProducerFactory;
+  public MergeJobController(JobService jobService) {
     this.jobService = jobService;
 
   }

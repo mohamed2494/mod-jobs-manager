@@ -1,36 +1,42 @@
 package org.folio.factory;
 
-import org.folio.service.merge.AbstractMergeProducerService;
-import org.folio.service.merge.TypeAMergeProducerService;
-import org.folio.service.merge.TypeBMergeProducerService;
-import org.folio.service.merge.TypeCMergeProducerService;
+import org.folio.service.merge.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class MergeProducerFactory {
-  private final TypeAMergeProducerService typeAMergeService;
-  private final TypeBMergeProducerService typeBMergeService;
 
-  private final TypeCMergeProducerService typeCMergeService;
+  private final Map<String, AbstractMergeProducerService> mergeServiceMap;
 
 
   @Autowired
   public MergeProducerFactory(TypeAMergeProducerService typeAMergeService, TypeBMergeProducerService typeBMergeService, TypeCMergeProducerService typeCMergeProducerService) {
-    this.typeAMergeService = typeAMergeService;
-    this.typeBMergeService = typeBMergeService;
-    this.typeCMergeService = typeCMergeProducerService;
+
+    mergeServiceMap = new HashMap<>();
+
+    mergeServiceMap.put(String.valueOf(MergeConstants.MergeType.TYPE_A).toUpperCase(), typeAMergeService);
+    mergeServiceMap.put(String.valueOf(MergeConstants.MergeType.TYPE_B).toUpperCase(), typeBMergeService);
+    mergeServiceMap.put(String.valueOf(MergeConstants.MergeType.TYPE_C).toUpperCase(), typeCMergeProducerService);
 
   }
 
   public AbstractMergeProducerService createMergeProducer(String type) {
 
-    if ("TypeA".equalsIgnoreCase(type)) {
-      return typeAMergeService;
-    } else if ("TypeB".equalsIgnoreCase(type)) {
-      return typeBMergeService;
-    }
-    // Handle unknown merge types or return a default producer
-    return typeCMergeService;
+    String typeKey = type.toUpperCase();
+
+    return mergeServiceMap.get(typeKey);
   }
+
+  public void registerMergeService(String type, AbstractMergeProducerService mergeService) {
+    mergeServiceMap.put(type.toUpperCase(), mergeService);
+  }
+
+  public void removeMergeService(String type) {
+    mergeServiceMap.remove(type.toUpperCase());
+  }
+
 }
